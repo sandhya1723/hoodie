@@ -180,11 +180,11 @@ Rejects with:
 +----------------------+-----------------------------------------+
 | InvalidError	       | Username must be set                    |
 +======================+=========================================+
-| ``SessionError``	   | Must sign out first                     |
+| SessionError         | Must sign out first                     |
 +----------------------+-----------------------------------------+
-| ``ConflictError``	   | Username **<username>** already exists  |
+| ``ConflictError``    | Username **<username>** already exists  |
 +----------------------+-----------------------------------------+
-| ``ConnectionError``  |	Could not connect to server          |
+| ``ConnectionError``  | Could not connect to server             |
 +----------------------+-----------------------------------------+
 
 Example
@@ -200,5 +200,6 @@ Example
         alert(error)
     })
 
+WIP
 <3<3<3
 
