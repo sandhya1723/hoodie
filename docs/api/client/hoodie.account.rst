@@ -152,9 +152,53 @@ account.signUp
 Creates a new user account on the Hoodie server. 
 Does `not` sign in the user automatically, `account.signIn <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_ must be called separately.
 
-..code::
+.. code:: js
 
     account.signUp(accountProperties)
-    
+
++--------------------------------+---------+----------+
+| Argument                       | Type    | Required |
++================================+=========+==========+
+| ``accountProperties.username`` | String  | Yes      |
++--------------------------------+---------+----------+
+| ``accountProperties.password`` | String  | Yes      |
++--------------------------------+---------+----------+
+
+Resolves with ``accountProperties``:
+
+.. code:: json
+
+    {
+        "id": "account123",
+        "username": "pat",
+        "createdAt": "2016-01-01T00:00.000Z",
+        "updatedAt": "2016-01-01T00:00.000Z"
+    }
+
+Rejects with:
+
++----------------------+-----------------------------------------+
+| InvalidError	       | Username must be set                    |
++======================+=========================================+
+| ``SessionError``	   | Must sign out first                     |
++----------------------+-----------------------------------------+
+| ``ConflictError``	   | Username **<username>** already exists  |
++----------------------+-----------------------------------------+
+| ``ConnectionError``  |	Could not connect to server          |
++----------------------+-----------------------------------------+
+
+Example
+
+.. code:: js
+
+    account.signUp({
+        username: 'pat',
+        password: 'secret'
+    }).then(function (accountProperties) {
+        alert('Account created for ' + accountProperties.username)
+    }).catch(function (error) {
+        alert(error)
+    })
+
 <3<3<3
 
