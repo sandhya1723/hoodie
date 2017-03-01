@@ -180,7 +180,7 @@ Rejects with:
 +----------------------+-----------------------------------------+
 | InvalidError	       | Username must be set                    |
 +======================+=========================================+
-| SessionError         | Must sign out first                     |
+| ``SessionError``     | Must sign out first                     |
 +----------------------+-----------------------------------------+
 | ``ConflictError``    | Username **<username>** already exists  |
 +----------------------+-----------------------------------------+
@@ -200,6 +200,208 @@ Example
         alert(error)
     })
 
-WIP
-<3<3<3
+account.signOut
+---------------
 
+Deletes the user’s session
+
+.. code:: js
+
+    account.signOut()
+
+Resolves with ``sessionProperties`` like `account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
+
+.. code:: json
+
+    {
+        "account": {
+            "id": "account123",
+            "username": "pat",
+            "createdAt": "2016-01-01T00:00.000Z",
+            "updatedAt": "2016-01-02T00:00.000Z",
+            "profile": {
+                "fullname": "Dr. Pat Hook"
+            }
+        }
+    }
+
+Rejects with:
+
++-----------+------------------------------------------------------+
+| ``Error`` | A custom error thrown in a ``before:signout`` hook   |
++-----------+------------------------------------------------------+
+
+Example
+
+.. code:: js
+
+    account.signOut().then(function (sessionProperties) {
+        alert('Bye, ' + sessionProperties.account.username)
+    }).catch(function (error) {
+        alert(error)
+    })
+
+account.destroy
+---------------
+
+Destroys the account of the currently signed in user.
+
+.. code:: js
+
+    account.destroy()
+
+Resolves with ``sessionProperties`` like `account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
+
+.. code:: json
+
+    {
+        "account": {
+            "id": "account123",
+            "username": "pat",
+            "createdAt": "2016-01-01T00:00.000Z",
+            "updatedAt": "2016-01-02T00:00.000Z",
+            "profile": {
+                "fullname": "Dr. Pat Hook"
+            }
+        }
+    }
+
+Rejects with:
+
++---------------------+----------------------------------------------------+
+| ``Error``           | A custom error thrown in a ``before:destroy`` hook |
++---------------------+----------------------------------------------------+
+| ``ConnectionError`` | Could not connect to server                        |
++---------------------+----------------------------------------------------+
+
+Example
+
+.. code::
+
+    account.destroy().then(function (sessionProperties) {
+        alert('Bye, ' + sessionProperties.account.username)
+    }).catch(function (error) {
+        alert(error)
+    })
+
+account.get
+-----------
+
+Returns account properties from local cache. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+
+.. code:: js
+
+    account.get(properties)
+
++-----------------+------------------------------------+---------------------------------------------------------------------------------------------------------+------------+
+| Argument        | Type                               | Description                                                                                             | Required   |
++=================+====================================+=========================================================================================================+============+
+| ``properties``  | String or Array of strings         | When String, only this property gets returned. If array of strings, only passed properties get returned | No         |
++-----------------+------------------------------------+---------------------------------------------------------------------------------------------------------+------------+
+
+Returns object with account properties, or ``undefined`` if not signed in.
+
+Examples
+
+.. code:: js
+
+    var properties = account.get()
+    alert('You signed up at ' + properties.createdAt)
+    var createdAt = account.get('createdAt')
+    alert('You signed up at ' + createdAt)
+    var properties = account.get(['createdAt', 'updatedAt'])
+    alert('You signed up at ' + properties.createdAt)
+
+account.fetch
+-------------
+
+Fetches account properties from server.
+
+.. code:: js
+
+    account.fetch(properties)
+
++----------------+----------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+| Argument       | Type                       | Description                                                                                                                                                                  | Required    |
++================+============================+==============================================================================================================================================================================+=============+
+| ``properties`` | String or Array of strings | When String, only this property gets returned. If array of strings, only passed properties get returned. Property names can have '.' separators to return nested properties. | No          |
++----------------+----------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
+
+Resolves with ``accountProperties``:
+
+.. code:: json
+
+    {
+        "id": "account123",
+        "username": "pat",
+        "createdAt": "2016-01-01T00:00.000Z",
+        "updatedAt": "2016-01-02T00:00.000Z"
+    }
+
+Rejects with:
+
++---------------------------+------------------------------+
+| ``UnauthenticatedError``  | Session is invalid           |
++---------------------------+------------------------------+
+| ``ConnectionError``       | Could not connect to server  |
++---------------------------+------------------------------+
+
+Examples
+
+.. code:: js
+
+    account.fetch().then(function (properties) {
+        alert('You signed up at ' + properties.createdAt)
+    })
+    account.fetch('createdAt').then(function (createdAt) {
+        alert('You signed up at ' + createdAt)
+    })
+    account.fetch(['createdAt', 'updatedAt']).then(function (properties) {
+        alert('You signed up at ' + properties.createdAt)
+    })
+
+account.update
+--------------
+
+Update account properties on server and local cache
+
+.. code:: js
+
+    account.update(changedProperties)
+
++-----------------------+-----------+--------------------------------------------------------------------------------+----------+
+| Argument              | Type      | Description                                                                    | Required |
++=======================+===========+================================================================================+==========+
+| ``changedProperties`` | Object    | Object of properties & values that changed. Other properties remain unchanged. | No       |
++-----------------------+-----------+--------------------------------------------------------------------------------+----------+
+
+Resolves with accountProperties:
+
+.. code:: json
+
+    {
+        "id": "account123",
+        "username": "pat",
+        "createdAt": "2016-01-01T00:00.000Z",
+        "updatedAt": "2016-01-01T00:00.000Z"
+    }
+
+Rejects with:
+
++--------------------------+----------------------------------------+
+| ``UnauthenticatedError`` | Session is invalid                     |
++--------------------------+----------------------------------------+
+| ``InvalidError``         | Custom validation error                |
++--------------------------+----------------------------------------+
+| ``ConflictError``        | Username **<username>** already exists |
++--------------------------+----------------------------------------+
+| ``ConnectionError``      | Could not connect to server            |
++--------------------------+----------------------------------------+
+
+Example
+
+.. code:: json
+
+    account.update({username: 'treetrunks'}).then(function (properties) {
+        alert('You are now known as ' + properties.username)
+    })
